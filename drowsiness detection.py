@@ -1,4 +1,3 @@
-
 #used to find euclidean distance betwwen two points
 from scipy.spatial import distance as dist
 from imutils.video import VideoStream
@@ -37,9 +36,7 @@ def eye_aspect_ratio(eye):
 
 #centre point of eye 
 EYE_AR_THRESH = 0.2
- 
 EYE_AR_CONSEC_FRAMES = 20
-
 COUNTER = 0
 ALARM_ON = False
 
@@ -47,7 +44,6 @@ ALARM_ON = False
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-
 
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
@@ -81,7 +77,6 @@ def Detection():
                         leftEAR = eye_aspect_ratio(leftEye)
                         rightEAR = eye_aspect_ratio(rightEye)
 
-                        
                         ear = (leftEAR + rightEAR) / 2.0
 
                         #extract left eye and right eye,draw points
@@ -95,34 +90,32 @@ def Detection():
                         if ear < EYE_AR_THRESH:
                                 COUNTER += 1
 
-                                
-                                if COUNTER >= EYE_AR_CONSEC_FRAMES:
+				if COUNTER >= EYE_AR_CONSEC_FRAMES:
                                         # if the alarm is not on, turn it on
                                         if not ALARM_ON:
                                                 ALARM_ON = True
-
-                                                
-                                                t = Thread(target=sound_alarm,args=("alarm.wav",))
+ 
+						t = Thread(target=sound_alarm,args=("alarm.wav",))
                                                 t.deamon = True
                                                 t.start()
 
                                         # draw an alarm on the frame
                                         cv2.putText(frame, "DROWSINESS ALERT!", (10, 30),
-                                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-                        # otherwise, the eye aspect ratio is not below the blink
-                        # threshold, so reset the counter and alarm
-                        else:
-                                COUNTER = 0
-                                ALARM_ON = False
-                        #write text on the image
-                        
-                        cv2.putText(frame, "Eye Ratio: {:.2f}".format(ear), (300, 30),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-         
-                # show the frame
-                cv2.imshow("Frame", frame)
-                key = cv2.waitKey(1) & 0xFF
+                       		 # otherwise, the eye aspect ratio is not below the blink
+                       		 # threshold, so reset the counter and alarm
+                       		 else:
+					COUNTER = 0
+					ALARM_ON = False
+					#write text on the image
+
+					cv2.putText(frame, "Eye Ratio: {:.2f}".format(ear), (300, 30),
+					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+			# show the frame
+			cv2.imshow("Frame", frame)
+			key = cv2.waitKey(1) & 0xFF
 
                 # if the `q` key was pressed, break from the loop
                 if key == ord("q"):
